@@ -1,0 +1,34 @@
+{
+  "name": "rproud-cli",
+  "version": "1.0.3",
+  "description": "rproud-cli",
+  "type": "commonjs",
+  "main": "index.js",
+  "bin": {
+    "rp": "./bin/index.js"
+  },
+  "files": [
+    "bin",
+    "package.json"
+  ],
+  "peerDependencies": {},
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "execa": "^5.1.1",
+    "inquirer": "^8.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "rm -rf ./test && node ./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wwyx778/rproud-cli.git"
+  },
+  "author": "https://github.com/wwyx778",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wwyx778/rproud-cli/issues"
+  },
+  "homepage": "https://github.com/wwyx778/rproud-cli#readme"
+}
