@@ -15,7 +15,11 @@ module.exports = async (name) => {
 
   const ora = require('ora')
 
-  const process = ora(`🚴🏻下载....${repo}`)
+  const process = ora({
+    text: '加载中',
+    prefixText: '🚴🏻下载模板->',
+    color: 'gray',
+  })
 
   process.start()
 
@@ -23,8 +27,8 @@ module.exports = async (name) => {
     // 个人分析出的两种错误情况：1 同目录项目名已存在 2 储存库出现问题
     if (err) return console.log('项目已存在或存储库错误！')
     // 创建成功 提示
-    console.log('vue项目创建成功')
+    setTimeout(() => {
+      process.succeed(chalk.green('vue项目创建成功'))
+    }, 50)
   })
-
-  process.succeed()
 }
