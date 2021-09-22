@@ -7,7 +7,7 @@ const download = require('download-git-repo')
 
 module.exports = async (name) => {
   clear()
-  const data = await figlet('bsm welcome')
+  const data = await figlet('bs-cli welcome')
   log(data)
 
   const repo =
