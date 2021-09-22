@@ -18,6 +18,7 @@
   "author": "zhangyiming",
   "license": "ISC",
   "dependencies": {
+    "@varlet/cli": "^1.21.0",
     "chalk": "^4.1.0",
     "clear": "^0.1.0",
     "commander": "^6.1.0",

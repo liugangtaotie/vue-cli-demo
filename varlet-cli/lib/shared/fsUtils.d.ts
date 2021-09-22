@@ -1,0 +1,14 @@
+export declare function getPublicDirs(): Promise<string[]>;
+export declare const isMD: (file: string) => boolean;
+export declare const isDir: (file: string) => boolean;
+export declare const isSFC: (file: string) => boolean;
+export declare const isJSX: (file: string) => boolean;
+export declare const isTSX: (file: string) => boolean;
+export declare const isScript: (file: string) => boolean;
+export declare const isLess: (file: string) => boolean;
+export declare const isPublicDir: (dir: string) => boolean;
+export declare const replaceExt: (file: string, ext: string) => string;
+export declare const bigCamelize: (s: string) => string;
+export declare const camelize: (s: string) => string;
+export declare function smartAppendFileSync(file: string, code: string): void;
+export declare function outputFileSyncOnChange(path: string, code: string): void;

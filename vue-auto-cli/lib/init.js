@@ -1,6 +1,7 @@
 const { promisify } = require('util')
 const clear = require('clear')
 const chalk = require('chalk')
+const execa = require('execa')
 const figlet = promisify(require('figlet'))
 const logChalk = (str) => console.info(chalk.green(str))
 const download = require('download-git-repo')
@@ -48,6 +49,15 @@ module.exports = async (name) => {
       log.success('👉  Get started with the following commands:\n')
       log.bash(`cd ${name}`)
       log.bash(`yarn install`)
+
+      logChalk('🚀安装依赖')
+
+      execa.commandSync('npm install', {
+        cwd: `./${name}`,
+        stdio: ['inherit', 'inherit', 'inherit'],
+      })
+
+      log.bash(`npm run serve`)
     }, 50)
   })
 }
