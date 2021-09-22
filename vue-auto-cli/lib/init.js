@@ -17,7 +17,7 @@ module.exports = async (name) => {
   const ora = require('ora')
 
   const process = ora({
-    text: '加载中',
+    text: 'loading',
     prefixText: '🚴🏻Download from template...',
     color: 'gray',
   })
