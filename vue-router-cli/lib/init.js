@@ -62,19 +62,19 @@ module.exports = async (name) => {
 
   // 下载依赖  npm i
   // 子进程
-  log(`🚴🏻安装依赖....`)
+  // log(`🚴🏻安装依赖....`)
   // await spawn('npm', ['install'], { cwd: `./${name}` })
-  log(
-    chalk.green(`
-👌安装完成：
-To get Start:
-===========================
-    cd ${name}
-    npm run serve
-===========================
-            `)
-  )
+  //   log(
+  //     chalk.green(`
+  // 👌安装完成：
+  // To get Start:
+  // ===========================
+  //     cd ${name}
+  //     npm run serve
+  // ===========================
+  //             `)
+  //   )
 
-  open('http://localhost:8080')
+  // open('http://localhost:8080')
   // await spawn('npm', ['run', 'serve'], { cwd: `./${name}` })
 }
