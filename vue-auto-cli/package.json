@@ -22,5 +22,8 @@
     "log-symbols": "^4.0.0",
     "ora": "^5.0.1",
     "vue-auto-router-cli": "^1.0.32"
+  },
+  "devDependencies": {
+    "inquirer": "^8.1.5"
   }
 }
