@@ -4,7 +4,7 @@ const program = require('commander')
 program.version(require('../package.json').version)
 
 program
-  .command('init <name>')
+  .command('init')
   .description('init project')
   .action(require('../lib/init'))
 

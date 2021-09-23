@@ -27,7 +27,7 @@ function entry() {
   })
 }
 
-module.exports = async (name) => {
+module.exports = async () => {
   clear()
   const data = await figlet('bs-cli welcome')
   logChalk(data)

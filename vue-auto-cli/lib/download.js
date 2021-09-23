@@ -7,7 +7,8 @@ const download = require('download-git-repo')
 const logChalk = (str) => console.info(chalk.green(str))
 
 const RepositoryList = {
-  mobile: 'direct:https://bitbucket.org/JeremyYu_1122/vue-test/get/master.zip',
+  mobile:
+    'direct:https://github.com/liugangtaotie/vue2-mobile-ssr-code.git#main',
   web: 'direct:https://bitbucket.org/JeremyYu_1122/vue-test/get/master.zip',
 }
 
@@ -32,9 +33,8 @@ function downloadTemplate(options) {
 async function installPackage(name) {
   logChalk('🚀install dependencies')
 
-  execa.commandSync('npm install', {
+  execa.commandSync('cnpm install', {
     cwd: `./${name}`,
-    stdio: ['inherit', 'inherit', 'inherit'],
   })
 
   logChalk('🎉install success🎉')
