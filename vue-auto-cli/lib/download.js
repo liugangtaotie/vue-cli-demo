@@ -35,6 +35,7 @@ async function installPackage(name) {
 
   execa.commandSync('cnpm install', {
     cwd: `./${name}`,
+    stdio: ['inherit', 'inherit', 'inherit'],
   })
 
   logChalk('🎉install success🎉')
