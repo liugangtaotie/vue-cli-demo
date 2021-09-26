@@ -1,30 +1,28 @@
-async function fn1(next) {
+async function fn1(mmmm) {
   console.info('1')
 
-  await next()
+  await mmmm()
 
   console.info('5')
 }
 
-async function fn2(next) {
+async function fn2(mmmm) {
   console.info('2')
 
-  await next()
+  await mmmm()
 
   console.info('4')
 }
 
-async function fn3(next) {
+async function fn3(mmmm) {
   console.info('3')
 }
 
 function compose(middlewares) {
   return function () {
     return dispatch(0)
-
     function dispatch(i) {
       let fn = middlewares[i]
-
       if (!fn) {
         return Promise.resolve()
       }
