@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
-const fsExtra = require('fs-extra');
-const readPkg = require('read-pkg');
-const { execSync } = require('child_process');
-const sh = require('shelljs');
+const fs = require('fs')
+const path = require('path')
+const fsExtra = require('fs-extra')
+const readPkg = require('read-pkg')
+const { execSync } = require('child_process')
+const sh = require('shelljs')
 
-function writeFileTree (dir, files) {
+function writeFileTree(dir, files) {
   Object.keys(files).forEach((name) => {
     const filePath = path.join(dir, name)
     fsExtra.ensureDirSync(path.dirname(filePath))
@@ -13,11 +13,10 @@ function writeFileTree (dir, files) {
   })
 }
 
-
-function resolveJson (context, name = 'package.json') {
+function resolveJson(context, name = 'package.json') {
   if (fs.existsSync(path.join(context, name))) {
     return readPkg.sync({
-      cwd: context
+      cwd: context,
     })
   }
   return {}
@@ -25,39 +24,39 @@ function resolveJson (context, name = 'package.json') {
 
 function pusBranch() {
   try {
-    execSync(`git add . && git commit -m 'release project' && git push`);
+    execSync(`git add . && git commit -m 'release project' && git push`)
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
 }
 
 class Shell {
   constructor() {
-    this.shell = sh;
+    this.shell = sh
   }
   exec(command) {
     return new Promise((resolve, reject) => {
       sh.exec(
         command,
         {
-          async: true
+          async: true,
         },
         (code, stdout, stderr) => {
-          stdout = stdout.toString().trim();
+          stdout = stdout.toString().trim()
           if (code === 0) {
             if (stderr) {
-              console.error(stderr.toString().trim());
+              console.error(stderr.toString().trim())
             }
-            resolve(stdout);
+            resolve(stdout)
           } else {
             if (stdout && stderr) {
-              console.error(`\n${stdout}`);
+              console.error(`\n${stdout}`)
             }
-            reject(new Error(stderr || stdout));
+            reject(new Error(stderr || stdout))
           }
         }
-      );
-    });
+      )
+    })
   }
 }
 
