@@ -30,7 +30,7 @@ module.exports = async (name) => {
 
     execa.commandSync('npm install', {
       cwd: `./${name}`,
-      stdio: ['inherit', 'inherit', 'inherit'],
+      stdio: [2, 2, 2],
     })
 
     log('安装依赖成功')
@@ -39,7 +39,7 @@ module.exports = async (name) => {
 
     execa.commandSync('npm run dev', {
       cwd: `./${name}`,
-      stdio: ['inherit', 'inherit', 'inherit'],
+      stdio: [2, 2, 2],
     })
   })
 }
