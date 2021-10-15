@@ -25,16 +25,16 @@ module.exports = async (name) => {
   await download(repo, name, { clone: true }, (err) => {
     if (err) return '出错了'
 
-    log('👏下载模板成功👏')
+    log('\n👏下载模板成功👏')
 
-    log('🚀安装依赖')
+    log('\n🚀安装依赖')
 
     execa.commandSync('npm install', {
       cwd: `./${name}`,
       stdio: [2, 2, 2],
     })
 
-    log('安装依赖成功')
+    log('\n安装依赖成功')
 
     open('http://localhost:3000/')
 
