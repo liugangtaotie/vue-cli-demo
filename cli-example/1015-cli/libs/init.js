@@ -29,14 +29,14 @@ module.exports = async (name) => {
     process.stop()
 
     // 🚴🏻downloaded sucess
-    log('🎉downloaded sucess🎉')
+    log('\n🎉downloaded sucess🎉')
 
     execa.commandSync('npm install', {
       cwd: `./${name}`,
       stdio: [2, 2, 2],
     })
 
-    log('👏 👏 👏 install success')
+    log('\n👏 👏 👏 install success')
 
     open('http://localhost:3000/')
 
