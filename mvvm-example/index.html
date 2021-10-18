@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <input type="text" v-model="school.name" />
+    <div>{{school.name}}</div>
+    <div>{{school.age}}</div>
+    {{getNewName}}
+  </div>
+  <!-- <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.js"></script> -->
+  <script src="./mvvmTwo.js"></script>
+  <script>
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        school: {
+          name: '菩萨',
+          age: 400
+        },
+      },
+
+      computed: {
+        getNewName() {
+          return this.school.name + '如来'
+        }
+
+      },
+      methods: {
+        onClick() {
+          alert('按钮点击了')
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>
