@@ -213,6 +213,7 @@ class Vue {
       for (let key in computed) {
         Object.defineProperty(this.$data, key, {
           get: () => {
+            console.info(this)
             console.info(computed[key].call(this))
             return computed[key].call(this)
           },
