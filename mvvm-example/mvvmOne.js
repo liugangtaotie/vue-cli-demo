@@ -204,12 +204,36 @@ class Vue {
   constructor(options) {
     this.$el = options.el
     this.$data = options.data
+    let computed = options.computed
 
     if (this.$el) {
       // 将所有data转化为Object.defineProperty
       new Observer(this.$data)
+
+      for (let key in computed) {
+        Object.defineProperty(this.$data, key, {
+          get: () => {
+            return computed[key].call(this)
+          },
+        })
+      }
+
+      // 把数据获取操作，vm上取值操作 都代理到 vm.$data
+      this.proxyVm(this.$data)
+
       // 编译
       new Compiler(this.$el, this)
+    }
+  }
+
+  proxyVm(data) {
+    for (let key in data) {
+      Object.defineProperty(this, key, {
+        get() {
+          return data[key]
+        },
+        set() {},
+      })
     }
   }
 }
