@@ -48,5 +48,7 @@ function createConfig(format, output) {
 }
 
 export default options.formats.map((format) => {
-  createConfig(format, outputConfig[format])
+  return createConfig(format, outputConfig[format])
 })
+
+xxxx
