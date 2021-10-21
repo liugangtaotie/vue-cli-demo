@@ -50,5 +50,3 @@ function createConfig(format, output) {
 export default options.formats.map((format) => {
   return createConfig(format, outputConfig[format])
 })
-
-xxxx
