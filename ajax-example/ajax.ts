@@ -1,5 +1,3 @@
-console.info('1111')
-
 const ajaxArr = [
   'ajax_a',
   'ajax_c',
@@ -32,8 +30,6 @@ const limitRequest = (urls, maxNum) => {
     while (count < maxNum) {
       next()
     }
-
-    console.info('1111', result)
 
     function next() {
       let current = count++
