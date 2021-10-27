@@ -1,61 +1,79 @@
-const ajaxArr = [
-  'ajax_a',
-  'ajax_c',
-  'ajax_d',
-  'ajax_e',
-  'ajax_f',
-  'ajax_g',
-  'ajax_h',
-  'ajax_i',
-]
+let ajaxArr = []
 
-const ajaxPromise = function (url) {
-  return new Promise(function (resolve, reject) {
+for (let i = 0; i < 20; i++) {
+  ajaxArr.push(`ajax_${i}`)
+}
+
+console.info(ajaxArr)
+
+// ajax 请求方式
+const ajaxPromise = (url) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      console.log('1000', url)
       resolve(true)
+      console.info(url)
     }, 1000)
   })
 }
 
-const limitRequest = (urls, maxNum) => {
-  const len = urls.length
+// 请求限流
+const limitRequest = (arr, maxNum) => {
+  // 请求总数
+  const len = arr.length
 
-  const result = new Array(len).fill(false)
+  // 标志位
+  let result = new Array(len).fill(false)
+
+  // 使用过index标志位
+  let resultUsed = new Array(len).fill(false)
 
   let count = 0
 
   return new Promise((resolve, reject) => {
-    // 请求maxNum个
     while (count < maxNum) {
       next()
     }
 
+    function randomNum(arr) {
+      // 取出为false的数组
+      let temp = []
+      arr.forEach((item, index) => {
+        if (!item) {
+          temp.push(index)
+        }
+      })
+      const index = Math.floor(Math.random() * temp.length)
+      return temp[index]
+    }
+
     function next() {
-      let current = count++
+      const current = count++
+
+      // 随机一个数，这个数字没有出现过
+      const currentNoRepeat = randomNum(resultUsed)
+      resultUsed[currentNoRepeat] = true
+
       // 处理边界条件
       if (current >= len) {
-        // 请求全部完成就将promise置为成功状态, 然后将result作为promise值返回
         !result.includes(false) && resolve(result)
-        console.info('222', result)
         return
       }
-      const url = urls[current]
-      console.log(`开始 ${current}`, new Date().toLocaleString())
+
+      const url = arr[currentNoRepeat]
+
+      console.log(`开始 ${currentNoRepeat}`, new Date().toLocaleString())
+
       ajaxPromise(url)
         .then((res) => {
-          // 保存请求结果
-          result[current] = res
-          console.log(`完成 ${current}`, new Date().toLocaleString())
-          // 请求没有全部完成, 就递归
+          result[currentNoRepeat] = true
+          console.log(`完成 ${currentNoRepeat}`, new Date().toLocaleString())
           if (current < len) {
             next()
           }
         })
         .catch((err) => {
-          console.log(`结束 ${current}`, new Date().toLocaleString())
-          result[current] = err
-          // 请求没有全部完成, 就递归
+          result[currentNoRepeat] = false
+          console.log(`失败 ${currentNoRepeat}`, new Date().toLocaleString())
           if (current < len) {
             next()
           }
@@ -64,4 +82,4 @@ const limitRequest = (urls, maxNum) => {
   })
 }
 
-limitRequest(ajaxArr, 3)
+limitRequest(ajaxArr, 5)
