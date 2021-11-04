@@ -154,6 +154,14 @@ CompilerUtil = {
       return data[current]
     }, vm.$data)
   },
+  setValue(vm, expr, value) {
+    return expr.split('.').reduce((data, current, index, arr) => {
+      if (index === arr.length - 1) {
+        data[current] = value
+      }
+      return data[current]
+    }, vm.$data)
+  },
   getContentValue(vm, expr) {
     return expr.replace(/{\{(.+?)\}\}/g, (...args) => {
       return this.getValue(vm, args[1])
@@ -161,6 +169,10 @@ CompilerUtil = {
   },
   model(node, expr, vm) {
     const fn = this.updater['updaterModel']
+
+    node.addEventListener('input', (e) => {
+      this.setValue(vm, expr, e.target.value)
+    })
 
     new Watcher(vm, expr, (newVal) => {
       fn(node, newVal)
@@ -173,11 +185,6 @@ CompilerUtil = {
     const fn = this.updater['updaterText']
 
     const value = expr.replace(/{\{(.+?)\}\}/g, (...args) => {
-      // new Watcher(vm,expr,(args[1])=>{
-      //  return this.setValue(vm,args[1])
-      // })
-      console.info('1111', args[1])
-
       new Watcher(vm, args[1], () => {
         fn(node, this.getContentValue(vm, expr))
       })
