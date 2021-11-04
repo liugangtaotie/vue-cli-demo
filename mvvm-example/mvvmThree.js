@@ -1,3 +1,44 @@
+class Dep {
+  constructor() {
+    this.subs = []
+  }
+
+  // 发布
+  addSub(watcher) {
+    this.subs.push(watcher)
+  }
+
+  // 订阅
+  notify() {
+    this.subs.forEach((watcher) => watcher.update())
+  }
+}
+
+// 发布-订阅者
+
+class Watcher {
+  constructor(vm, expr, cb) {
+    this.expr = expr
+    this.vm = vm
+    this.cb = cb
+
+    this.oldVal = this.getValue()
+  }
+
+  getValue() {
+    Dep.target = this
+    const value = CompilerUtil.getValue(this.vm, this.expr)
+    Dep.target = null
+  }
+
+  update() {
+    const newVal = CompilerUtil.getValue(this.vm, this.expr)
+    if (newVal !== this.oldVal) {
+      this.cb(newVal)
+    }
+  }
+}
+
 // 数据劫持
 class Observer {
   constructor(data) {
@@ -14,15 +55,17 @@ class Observer {
 
   defineReactive(obj, key, value) {
     this.observer(value)
+    const dep = new Dep()
     Object.defineProperty(obj, key, {
       get() {
+        Dep.target && dep.addSub(Dep.target)
         return value
       },
       set: (newVal) => {
         if (newVal !== value) {
           this.observer(newVal)
-
           value = newVal
+          dep.notify()
         }
       },
     })
@@ -111,9 +154,17 @@ CompilerUtil = {
       return data[current]
     }, vm.$data)
   },
+  getContentValue(vm, expr) {
+    return expr.replace(/{\{(.+?)\}\}/g, (...args) => {
+      return this.getValue(vm, args[1])
+    })
+  },
   model(node, expr, vm) {
     const fn = this.updater['updaterModel']
 
+    new Watcher(vm, expr, (newVal) => {
+      fn(node, newVal)
+    })
     const value = this.getValue(vm, expr)
 
     fn(node, value)
@@ -122,6 +173,15 @@ CompilerUtil = {
     const fn = this.updater['updaterText']
 
     const value = expr.replace(/{\{(.+?)\}\}/g, (...args) => {
+      // new Watcher(vm,expr,(args[1])=>{
+      //  return this.setValue(vm,args[1])
+      // })
+      console.info('1111', args[1])
+
+      new Watcher(vm, args[1], () => {
+        fn(node, this.getContentValue(vm, expr))
+      })
+
       return this.getValue(vm, args[1])
     })
 
