@@ -3,7 +3,7 @@
 - [commander](https://github.com/tj/commander.js)：提供了用户命令行输入和参数解析强大功能。
 - [Inquirer](https://github.com/SBoudrias/Inquirer.js)：交互式命令行工具
 - [execa](https://github.com/sindresorhus/execa)：A better [child_process](https://github.com/patrick-steele-idem/child-process-promise)。
-- [handlebars](https://github.com/handlebars-lang/handlebars.js)：一个 javascript 语以模版库。
+- [handlebars](https://github.com/handlebars-lang/handlebars.js)：一个 javascript 语意模版库。
 - [metalsmith](https://github.com/segmentio/metalsmith)；An extremely simple, pluggable static site generator。
 - [chalk](https://github.com/chalk/chalk)：Terminal string styling done right。
 - [consolidate](https://github.com/tj/consolidate.js)：Template engine consolidation library for node.js 。
