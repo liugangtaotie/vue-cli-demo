@@ -1,63 +1,58 @@
-// 发布-订阅 观察者模式 -  被观察者
-
-// 订阅者
 class Dep {
   constructor() {
-    this.subs = []
+    this.subs = [] // 消息池
   }
 
   addSub(watcher) {
+    // 把每一个watcher 放入消息池
     this.subs.push(watcher)
   }
 
-  // 订阅
   notify() {
     this.subs.forEach((watcher) => watcher.update())
   }
 }
 
-// 发布者
 class Watcher {
   constructor(vm, expr, cb) {
     this.vm = vm
     this.expr = expr
     this.cb = cb
 
-    this.oldVal = this.getVal()
+    this.oldVal = this.get()
   }
 
-  getVal() {
+  get() {
     Dep.target = this
-    const value = CompilerUtil.getValue(this.vm, this.expr)
+    const value = CompilerUtils.getValue(this.vm, this.expr)
     Dep.target = null
     return value
   }
 
   update() {
-    const newValue = CompilerUtil.getValue(this.vm, this.expr)
-    console.info('update', newValue)
-    console.info('update', this.oldVal)
-    if (newValue !== this.oldVal) {
-      console.info('执行回调')
-      this.cb(newValue)
+    const newVal = CompilerUtils.getValue(this.vm, this.expr)
+    if (newVal !== this.oldVal) {
+      this.cb(newVal)
     }
   }
 }
 
-// 数据劫持
-class Observe {
+class Observer {
   constructor(data) {
-    this.observe(data)
+    this.observer(data)
+    console.info(data)
   }
-  observe(obj) {
+
+  observer(obj) {
     if (obj && typeof obj === 'object') {
       for (let key in obj) {
         this.defineReactive(obj, key, obj[key])
       }
     }
   }
+
   defineReactive(obj, key, value) {
-    this.observe(value)
+    this.observer(value)
     const dep = new Dep()
     Object.defineProperty(obj, key, {
       get() {
@@ -66,7 +61,7 @@ class Observe {
       },
       set: (newVal) => {
         if (newVal !== value) {
-          this.observe(newVal)
+          this.observer(newVal)
           value = newVal
           dep.notify()
         }
@@ -80,16 +75,19 @@ class Compiler {
   constructor(el, vm) {
     this.el = this.isElementNode(el) ? el : document.querySelector(el)
     this.vm = vm
-
-    // 将数据放入内存
     const fragment = this.node2fragment(this.el)
-
-    // 用数据编译模板
+    // 核心的编译模块
     this.compiler(fragment)
+
     this.el.appendChild(fragment)
   }
 
-  // 将数据放入内存
+  // 判断当前节点是否是node节点
+  isElementNode(node) {
+    return node.nodeType === 1
+  }
+
+  // 把当前节点放入内存
   node2fragment(node) {
     let fragment = document.createDocumentFragment()
     let firstChild
@@ -99,93 +97,111 @@ class Compiler {
     return fragment
   }
 
-  // 是否是一个node节点
-  isElementNode(node) {
-    return node.nodeType === 1
-  }
-
-  // 是否是一个指令
-  isDirective(name) {
+  // 是否是vue2里面的指令
+  isDirection(name) {
     return name.startsWith('v-')
   }
 
-  // 编译element
-  compilerElement(node) {
+  // element
+  elementCompiler(node) {
     const attributes = node.attributes
-    ;[...attributes].forEach((attr) => {
-      const { name, value: expr } = attr
-      if (this.isDirective(name)) {
+    ;[...attributes].forEach((item) => {
+      const { name, value: expr } = item
+      if (this.isDirection(name)) {
         const [, directive] = name.split('-')
-        CompilerUtil[directive](node, expr, this.vm)
+        CompilerUtils[directive](node, expr, this.vm)
       }
     })
   }
 
-  // 编译text
-  compilerText(node) {
+  // text
+  textCompiler(node) {
     const textContent = node.textContent
-    if (/{\{(.+?)\}\}/.test(textContent)) {
-      CompilerUtil['text'](node, textContent, this.vm)
+    if (/\{\{(.+?)\}\}/.test(textContent)) {
+      CompilerUtils['text'](node, textContent, this.vm)
     }
   }
 
-  // 用数据编译模板
+  // 核心编译模块
   compiler(node) {
     const childNodes = node.childNodes
-    ;[...childNodes].forEach((child) => {
-      if (this.isElementNode(child)) {
-        this.compilerElement(child)
-        this.compiler(child)
+    ;[...childNodes].forEach((item) => {
+      // 如果是input/div
+      if (this.isElementNode(item)) {
+        this.elementCompiler(item)
+        this.compiler(item)
       } else {
-        this.compilerText(child)
+        this.textCompiler(item)
       }
     })
   }
 }
 
+// 只是名称而已，没有其他具体含义
+
 // 工具类
-CompilerUtil = {
+CompilerUtils = {
   getValue(vm, expr) {
     return expr.split('.').reduce((data, current) => {
       return data[current]
     }, vm.$data)
   },
+  setValue(vm, expr, value) {
+    return expr.split('.').reduce((data, current, index, arr) => {
+      if (index == arr.length - 1) {
+        return (data[current] = value)
+      }
+      return data[current]
+    }, vm.$data)
+  },
   model(node, expr, vm) {
-    const fn = this.updater['modelUpdate']
+    const fn = this.updater['modelUpdater']
     new Watcher(vm, expr, (newValue) => {
       console.info(newValue)
       fn(node, newValue)
+    })
+
+    node.addEventListener('input', (e) => {
+      this.setValue(vm, expr, e.target.value)
     })
     const value = this.getValue(vm, expr)
     fn(node, value)
   },
   text(node, expr, vm) {
-    const fn = this.updater['textUpdate']
-    const value = expr.replace(/{\{(.+?)\}\}/g, (...args) => {
+    const fn = this.updater['textUpdater']
+    const value = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      new Watcher(vm, args[1], (newValue) => {
+        fn(node, newValue)
+      })
       return this.getValue(vm, args[1])
     })
     fn(node, value)
   },
+
+  // 方法
   updater: {
-    modelUpdate(node, value) {
-      return (node.value = value)
+    modelUpdater(node, value) {
+      node.value = value
     },
-    textUpdate(node, value) {
-      return (node.textContent = value)
+    textUpdater(node, value) {
+      node.textContent = value
     },
   },
 }
 
 // 手写一个mvvm.js
+
 class Vue {
   constructor(options) {
     this.$el = options.el
     this.$data = options.data
 
+    // 先判断当前节点是否在html中
     if (this.$el) {
-      // 将所有的data 转化为Object.defineProperty
-      new Observe(this.$data)
-      // 用数据编译模块
+      // 把所有data转化为Object.defineProperty
+      new Observer(this.$data)
+
+      // 核心的编译模块
       new Compiler(this.$el, this)
     }
   }
